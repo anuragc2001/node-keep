@@ -44,7 +44,7 @@ router.patch('/id/:id', async (req, res) => {
     }
 })
 
-router.post('/newtask', async (req, res) => {
+router.post('/new', async (req, res) => {
     const newTask = new Task(req.body)
 
     try{
@@ -53,6 +53,18 @@ router.post('/newtask', async (req, res) => {
 
     }catch(e) {
         res.status(400).send(e)
+    }
+})
+
+router.delete('/id/:id', async (req, res) => {
+    const _id = req.params.id
+
+    try {
+        const task = await Task.findByIdAndDelete(_id);
+        if(!task) return res.status(404).send('Task not found')
+        res.status(200).send(task)
+    } catch (e) {
+        res.status(500).send(e)
     }
 })
 

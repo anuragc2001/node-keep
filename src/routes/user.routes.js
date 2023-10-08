@@ -12,11 +12,11 @@ router.get('/all', async (req, res) => {
     }
 })
 
-router.get('/id/:id', (req, res) => {
-    _id = req.params.id
+router.get('/id/:id', async (req, res) => {
+    const _id = req.params.id
 
     try {
-        const user =  User.findById(_id)
+        const user =  await User.findById(_id)
         if(!user) return res.status(404).send('User not found')
         res.status(200).send(user)
 
@@ -57,5 +57,17 @@ router.patch('/id/:id', async (req, res) => {
     }
 })
 
+router.delete('/id/:id', async (req, res) => {
+    const _id = req.params.id
+
+    try {
+        const user = await User.findByIdAndDelete(_id)
+        if(!user) return res.status(404).send('User not found')
+        res.status(200).send(user)
+
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
 
 module.exports = router

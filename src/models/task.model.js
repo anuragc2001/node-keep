@@ -9,7 +9,7 @@ const taskModel = mongoose.Schema({
 
     completed: {
         type: Boolean,
-        required: true,
+        required: false,
         default: false,
     }
 })
