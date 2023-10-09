@@ -47,6 +47,12 @@ const userModel = mongoose.Schema({
     }]
 })
 
+userModel.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 userModel.methods.generateAuthToken = async function (){
     const user = this
     const userID = String(user._id)

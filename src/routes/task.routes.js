@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {Task} = require('../models/task.model')
+const auth = require('../middlewares/auth.middleware')
 
 const {
     deleteTask,
@@ -9,15 +10,15 @@ const {
     getTask,
     updateTask} = require('../controllers/task.controller')
 
-router.get('/all', getAllTask)
+router.get('/', auth, getAllTask)
 
-router.get('/id/:id', getTask)
+router.get('/task', auth, getTask)
 
-router.patch('/id/:id', updateTask)
+router.patch('/update', auth, updateTask)
 
-router.post('/new', addTask)
+router.post('/new', auth, addTask)
 
-router.delete('/id/:id', deleteTask)
+router.delete('/delete', auth, deleteTask)
 
 router.delete('/delall', async (req, res) => {
     await Task.deleteMany({})

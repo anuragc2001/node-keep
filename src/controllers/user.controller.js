@@ -1,4 +1,5 @@
 const {User} = require('../models/user.model')
+const {Task} = require('../models/task.model')
 
 
 const getAllUser = async (req, res) => {
@@ -13,8 +14,9 @@ const getAllUser = async (req, res) => {
 
 const getUser = async (req, res) => {
     const user = req.user
+    await user.populate(['tasks']);
     const publicUser = await user.getPublicObject()
-    res.send(publicUser)
+    res.send({publicUser, tasks: user.tasks})
 }
 
 const registerUser = async (req, res) => {
@@ -59,7 +61,8 @@ const deleteUser = async (req, res) => {
 
     try {
         const user = await User.findByIdAndDelete(req.user._id)
-        res.status(200).send(user)
+        const task = await Task.deleteMany({owner: req.user._id})
+        res.status(200).send({user, task})
 
     } catch (error) {
         res.status(500).send(error)
