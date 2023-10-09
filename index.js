@@ -13,7 +13,7 @@ const userRoute = require('./src/routes/user.routes')
 const taskRoute = require('./src/routes/task.routes')
 
 
-
+// app.use((req, res) => res.send('Site under construction'))
 
 app.use(express.json())
 app.use('/user', userRoute)

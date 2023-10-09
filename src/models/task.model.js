@@ -14,6 +14,10 @@ const taskModel = mongoose.Schema({
     }
 })
 
+taskModel.pre('save', async function () {
+    console.log('task saved!!!');
+})
+
 const Task = mongoose.model('Task', taskModel)
 
 module.exports = {

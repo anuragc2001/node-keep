@@ -2,71 +2,26 @@ const express = require('express')
 const router = express.Router()
 const {Task} = require('../models/task.model')
 
-router.get('/all', async (req, res) => {
+const {
+    deleteTask,
+    addTask,
+    getAllTask,
+    getTask,
+    updateTask} = require('../controllers/task.controller')
 
-    try {
-        const tasks = await Task.find({})
-        res.status(200).send(tasks)
-    } catch (e) {
-        res.status(400).send(e)
-    }
+router.get('/all', getAllTask)
 
+router.get('/id/:id', getTask)
+
+router.patch('/id/:id', updateTask)
+
+router.post('/new', addTask)
+
+router.delete('/id/:id', deleteTask)
+
+router.delete('/delall', async (req, res) => {
+    await Task.deleteMany({})
+    res.status(200).send('deleted')
 })
-
-router.get('/id/:id', async (req, res) => {
-    const _id = req.params.id
-
-    try{
-        const task = await Task.findById(_id)
-        if(!task) return res.status(404).send('Task not found')
-        res.status(200).send(task)
-
-    }catch(e){
-        res.status(400).send(e)
-    }
-})
-
-router.patch('/id/:id', async (req, res) => {
-    const _id = req.params.id
-
-    const updates = Object.keys(req.body)
-    const allowed = ['description', 'completed']
-    const isValid = updates.every((update) => { return allowed.includes(update)})
-
-    if(!isValid) return res.status(400).send('Invalid Update')
-
-    try {
-        const task = await Task.findByIdAndUpdate(_id, req.body, {new: true, runValidators: true})
-        res.status(200).send(task)
-        
-    } catch (e) {
-        res.status(400).send(e)
-    }
-})
-
-router.post('/new', async (req, res) => {
-    const newTask = new Task(req.body)
-
-    try{
-        await newTask.save()
-        res.status(201).send('Task added successfully...')
-
-    }catch(e) {
-        res.status(400).send(e)
-    }
-})
-
-router.delete('/id/:id', async (req, res) => {
-    const _id = req.params.id
-
-    try {
-        const task = await Task.findByIdAndDelete(_id);
-        if(!task) return res.status(404).send('Task not found')
-        res.status(200).send(task)
-    } catch (e) {
-        res.status(500).send(e)
-    }
-})
-
 
 module.exports = router
